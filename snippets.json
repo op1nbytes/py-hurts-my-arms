@@ -1,0 +1,3 @@
+{
+  "snippet": "class main:\n    def __init__(self):\n        print('hello world')\nmain()\n "
+}

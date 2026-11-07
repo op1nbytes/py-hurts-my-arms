@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Py Hurts My Arms Plugin Guide</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #151923;
+      --panel-2: #1b2230;
+      --text: #e6e9ef;
+      --muted: #a9b1c3;
+      --accent: #7aa2f7;
+      --accent-2: #9ece6a;
+      --border: #2a3345;
+      --code-bg: #0b0d12;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.3px;
+      margin-bottom: 16px;
+    }
+
+    .search {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    nav a {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover, nav a:focus {
+      color: var(--text);
+      background: var(--panel-2);
+    }
+
+    main {
+      padding: 28px 32px 64px;
+      max-width: 1100px;
+    }
+
+    h1, h2, h3 { color: var(--text); }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    h2 { font-size: 22px; margin-top: 28px; }
+    h3 { font-size: 18px; margin-top: 20px; }
+    p { color: var(--muted); line-height: 1.6; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    code, pre {
+      font-family: "Cascadia Code", "Fira Code", monospace;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      overflow: auto;
+      color: #d4d4d4;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #1f2a44;
+      color: var(--accent);
+      font-size: 12px;
+      margin-left: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 980px) {
+      body { grid-template-columns: 1fr; }
+      aside { position: relative; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <div class="brand">Py Hurts My Arms</div>
+    <input class="search" placeholder="Search (Ctrl+F)" />
+    <nav>
+      <a href="#intro">Intro</a>
+      <a href="#structure">Plugin Structure</a>
+      <a href="#manifest">manifest.json</a>
+      <a href="#commands">Commands</a>
+      <a href="#palette">Command Palette</a>
+      <a href="#keybinds">Keybinds</a>
+      <a href="#settings">Plugin Settings</a>
+      <a href="#ui-tabs">UI: Bottom Tabs</a>
+      <a href="#ui-sidebar">UI: Sidebar Buttons</a>
+      <a href="#ui-menus">UI: Menus</a>
+      <a href="#ctx">CTX Helpers</a>
+      <a href="#full-example">Full Example</a>
+      <a href="#troubleshoot">Troubleshooting</a>
+      <a href="#ideas">Extra Ideas</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="intro">
+      <h1>Py Hurts My Arms � Plugin Guide</h1>
+      <p>Everything you need to build plugins: commands, UI, settings, keybinds, and more.</p>
+      <div class="card">
+        <strong>Target app:</strong> <span class="muted">D:\py hurts my brain\pyhurtsmyarmsfree</span>
+      </div>
+    </section>
+
+    <section id="structure">
+      <h2>1) Plugin Structure</h2>
+      <p>Each plugin is a folder inside <code>plugins/</code> with a <code>manifest.json</code> and <code>main.py</code> (or <code>plugin.py</code>).</p>
+      <pre><code>plugins/
+  my_plugin/
+    manifest.json
+    main.py</code></pre>
+    </section>
+
+    <section id="manifest">
+      <h2>2) manifest.json</h2>
+      <div class="card">
+        <p>Minimal:</p>
+        <pre><code>{
+  "name": "MyPlugin",
+  "version": "1.0",
+  "settings": {}
+}</code></pre>
+        <p>With settings:</p>
+        <pre><code>{
+  "name": "MyPlugin",
+  "version": "1.0",
+  "settings": {
+    "greeting": "Hello",
+    "count": 3
+  }
+}</code></pre>
+      </div>
+      <p>Settings show up automatically in <strong>Plugins ? Plugin Manager ? Settings</strong>.</p>
+    </section>
+
+    <section id="commands">
+      <h2>3) Commands</h2>
+      <p>Commands appear in the Command Palette as <code>PluginName: Command</code>.</p>
+      <pre><code>from PyQt5.QtWidgets import QMessageBox
+
+class Plugin:
+    def __init__(self, ctx):
+        self.ctx = ctx
+        self.plugin_name = "MyPlugin"
+        self.ctx.register_plugin_command(self.plugin_name, "Say Hello", self.say_hello)
+
+    def say_hello(self):
+        QMessageBox.information(self.ctx, "Hello", "Hello from plugin!")</code></pre>
+    </section>
+
+    <section id="palette">
+      <h2>4) Command Palette</h2>
+      <p>Open with <code>Ctrl+Shift+P</code>. Every plugin command shows up here automatically.</p>
+    </section>
+
+    <section id="keybinds">
+      <h2>5) Keybinds</h2>
+      <p>Add keybinds in <code>keybinds.json</code> using:</p>
+      <pre><code>{
+  "plugin::MyPlugin: Say Hello": "Ctrl+Alt+H"
+}</code></pre>
+    </section>
+
+    <section id="settings">
+      <h2>6) Plugin Settings API</h2>
+      <pre><code>msg = self.ctx.get_plugin_setting(self.plugin_name, "greeting", "Hi")
+self.ctx.set_plugin_setting(self.plugin_name, "greeting", "Yo")</code></pre>
+      <p>Settings are saved in <code>plugins_settings.json</code>.</p>
+    </section>
+
+    <section id="ui-tabs">
+      <h2>7) UI: Add a Bottom Tab</h2>
+      <pre><code>from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+
+class Plugin:
+    def __init__(self, ctx):
+        self.ctx = ctx
+
+    def setup(self):
+        tab = QWidget()
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("Hello from a plugin tab"))
+        tab.setLayout(layout)
+        self.ctx.add_tab(tab, "My Tab")</code></pre>
+    </section>
+
+    <section id="ui-sidebar">
+      <h2>8) UI: Add a Sidebar Button</h2>
+      <pre><code>from PyQt5.QtWidgets import QPushButton
+
+class Plugin:
+    def __init__(self, ctx):
+        self.ctx = ctx
+
+    def setup(self):
+        btn = QPushButton("N")
+        btn.setObjectName("sidebar_plugin_button")
+        btn.setFixedSize(30, 30)
+        btn.clicked.connect(self.open_tab)
+        self.ctx.add_sidebar_widget(btn)
+
+    def open_tab(self):
+        for i in range(self.ctx.bottom_tabs.count()):
+            if self.ctx.bottom_tabs.tabText(i) == "My Tab":
+                self.ctx.bottom_tabs.setCurrentIndex(i)
+                return</code></pre>
+    </section>
+
+    <section id="ui-menus">
+      <h2>9) UI: Add a Menu</h2>
+      <pre><code>class Plugin:
+    def __init__(self, ctx):
+        self.ctx = ctx
+
+    def setup(self):
+        menu = self.ctx.add_menu("MyPlugin")
+        action = menu.addAction("Do Thing")
+        action.triggered.connect(self.do_thing)
+
+    def do_thing(self):
+        self.ctx.statusBar().showMessage("Menu clicked", 2000)</code></pre>
+    </section>
+
+    <section id="ctx">
+      <h2>10) CTX Helper Methods</h2>
+      <div class="grid">
+        <div class="card"><strong>ctx.add_tab(widget, name)</strong><br><span class="muted">Add bottom panel tab</span></div>
+        <div class="card"><strong>ctx.add_sidebar_widget(widget)</strong><br><span class="muted">Add a sidebar button</span></div>
+        <div class="card"><strong>ctx.add_menu(name)</strong><br><span class="muted">Add menu to top bar</span></div>
+        <div class="card"><strong>ctx.register_plugin_command(...)</strong><br><span class="muted">Add palette command</span></div>
+      </div>
+    </section>
+
+    <section id="full-example">
+      <h2>11) Full Example Plugin</h2>
+      <pre><code>plugins/example_plugin/manifest.json
+{
+  "name": "ExamplePlugin",
+  "version": "1.0",
+  "settings": {
+    "message": "Hello from settings"
+  }
+}
+
+plugins/example_plugin/main.py
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox
+
+class Plugin:
+    def __init__(self, ctx):
+        self.ctx = ctx
+        self.plugin_name = "ExamplePlugin"
+        self.ctx.register_plugin_command(self.plugin_name, "Show Message", self.show_msg)
+
+    def setup(self):
+        tab = QWidget()
+        layout = QVBoxLayout()
+        label = QLabel("Example Plugin Tab")
+        btn = QPushButton("Open Message")
+        btn.clicked.connect(self.show_msg)
+        layout.addWidget(label)
+        layout.addWidget(btn)
+        tab.setLayout(layout)
+        self.ctx.add_tab(tab, "Example")
+
+    def show_msg(self):
+        msg = self.ctx.get_plugin_setting(self.plugin_name, "message", "Hi")
+        QMessageBox.information(self.ctx, "Message", msg)</code></pre>
+    </section>
+
+    <section id="troubleshoot">
+      <h2>12) Troubleshooting</h2>
+      <div class="card">
+        <p><strong>Plugin not loading:</strong> Check <em>Plugins ? Plugin Errors</em>.</p>
+        <p><strong>Command missing:</strong> Ensure <code>register_plugin_command</code> is called in <code>__init__</code>.</p>
+        <p><strong>Settings missing:</strong> Confirm <code>settings</code> is in <code>manifest.json</code>.</p>
+      </div>
+    </section>
+
+    <section id="ideas">
+      <h2>Extra Ideas</h2>
+      <div class="card">
+        <ul>
+          <li>Plugin template generator command</li>
+          <li>Marketplace UI inside Plugins menu</li>
+          <li>Per-plugin QSS styling hooks</li>
+          <li>Plugin update checker</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

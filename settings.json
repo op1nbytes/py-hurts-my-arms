@@ -1,0 +1,21 @@
+{
+  "ui_theme_qss": "D:\\py hurts my brain\\pyqt-code-editor-yt\\src\\css\\style.qss",
+  "keybinds": "D:\\py hurts my brain\\pyqt-code-editor-yt\\keybinds.json",
+  "highlighter_theme": "D:\\py hurts my brain\\pyqt-code-editor-yt\\theme.json",
+  "terminal": {
+    "default_shell": "Windows PowerShell",
+    "auto_cwd": "project"
+  },
+  "run_command": "{PYTHON} -u {CURRENT_FILE}",
+  "venv_python": "",
+  "editor": {
+    "trim_whitespace_on_save": false,
+    "whitespace_visible": false,
+    "font_size": 12,
+    "block_cursor": false
+  },
+  "localhost_url": "http://localhost:8000",
+  "title_mode": "project_name",
+  "logo_mode": "project",
+  "default_logo": ""
+}
