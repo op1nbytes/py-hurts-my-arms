@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR-DOMAIN/sitemap.xml
+Sitemap: https://op1nbytes.github.io/py-hurts-my-arms/sitemap.xml
